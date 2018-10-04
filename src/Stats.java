@@ -43,7 +43,7 @@ public class Stats {
 
     //A RECURSIVE QUICK SORT ALGORITHM
 
-    //A HYBRID QUICK SORT ALGORITHM THAT USES A BREAKPOINT
+    //A HYBRID QUICK SORT ALGORITHM THAT USES A BREAKPOINT.
 
 
     //--------------------------------------------------------------------------
