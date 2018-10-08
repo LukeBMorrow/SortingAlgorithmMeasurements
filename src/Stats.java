@@ -1,3 +1,16 @@
+/* Stats.java
+
+   COMP 2140 SECTION A01
+   INSTRUCTOR   Cameron(A01)
+   ASSIGNMENT   1
+   @author      Luke Morrow, 7787696
+   @version     2018-10-08
+
+    PURPOSE: This class runs 100(default) tests on 4 kinds of sorts
+    (insertion, merge, quick, and a hybrid quick/insertion).
+    And times their sorts then prints the mean, standard deviation,
+    and the z-test between each of the sorts.
+ */
 import java.lang.Math;
 
 public class Stats {
@@ -39,6 +52,12 @@ public class Stats {
     }
 
 
+
+    public static void main(String[] args)
+    {
+        testAndBenchmark(NUM_TESTS, TEST_SIZE, NUM_RANDOM_SWAPS);
+    }//END MAIN
+
     //      SORTING WORK
     //A NON- RECURSIVE INSERTION SORT ALGORITHM
     public static void insertionSort(int[] nums) {
@@ -68,15 +87,15 @@ public class Stats {
 
     //      RECURSIVE WORK
     //A RECURSIVE MERGE SORT ALGORITHM
-    public void mergeSort(int[] nums) {
+    public static void mergeSort(int[] nums) {
         int[] temp = new int[nums.length];
         mergeSort(nums, 0, nums.length - 1, temp);
     }
 
-    private void mergeSort(int[] nums, int start, int end, int[] temp) {
+    private static void mergeSort(int[] nums, int start, int end, int[] temp) {
         int mid;
 
-        if (1 < end - start)//only run if there is more then 1 item in a list
+        if (1 < (end - start))//only run if there is more then 1 item in a list
         {
             mid = start + (end - start) / 2;// define the middle of the array
 
@@ -88,7 +107,7 @@ public class Stats {
         }//END IF
     }//END MERGESORT
 
-    private void merge(int[] nums, int start, int mid, int end, int[] temp) {
+    private static void merge(int[] nums, int start, int mid, int end, int[] temp) {
         int currL = start;
         int currR = mid;
         int currT;
@@ -106,7 +125,8 @@ public class Stats {
             }//END ELSE
         }//END FOR
 
-        System.arraycopy(temp, 0, nums, 0, temp.length);
+        for(currT = start; currT<end; currT++)
+        { nums[currT]=temp[currT];}
         //^deep copy the temp array to the nums array
 
     }//END MERGE
@@ -116,7 +136,7 @@ public class Stats {
     /*A driver method to ensure intuitive use for the user
         >nums is the main array
      */
-    public void quicksort(int[] nums) {
+    public static void quicksort(int[] nums) {
         quicksort(nums, 0, nums.length);
     }
 
@@ -131,7 +151,7 @@ public class Stats {
          >start is the start of the part being sorted
          >end is the end of the part being sorted
      */
-    private void quicksort(int[] nums, int start, int end) {
+    private static void quicksort(int[] nums, int start, int end) {
         if (end - start > 1)//run if there are at least two items to compare
         {
             medianOf3(nums, start, end - 1);//choose a non-terrible pivot
@@ -226,21 +246,18 @@ public class Stats {
 
     //      NON SORTING WORK
     //A METHOD THAT VERIFIES THAT AN ARRAY IS IN SORTED ORDER
-    public static boolean isSorted(int[] nums, String sortType) {
+    public static boolean isSorted(int[] nums, String sortType, boolean shouldBeOrdered) {
         int currentSortedIndex = 0;
         while (currentSortedIndex < nums.length && nums[currentSortedIndex] < nums[currentSortedIndex + 1]) {
             currentSortedIndex++;
         }//look for a place where the data is out of order
 
 
-        if (!(nums[currentSortedIndex] < nums[currentSortedIndex + 1])) {
+        if (!(nums[currentSortedIndex] < nums[currentSortedIndex + 1]) && shouldBeOrdered) {
             System.out.println("Sorting type: " + sortType + " :FAILED at position: " + currentSortedIndex);
             return false;
-        } else//END IF
-        {
-            System.out.println("Sorting type: " + sortType + " :ran SUCCESSFULLY");
-            return true;
-        }//END ELSE
+        }//END IF
+        return true;
     }//END ISSORTED
 
 
@@ -267,63 +284,127 @@ public class Stats {
         long[] mergeSortTime = new long[numOfTests];
         long[] quickSortTime = new long[numOfTests];
         long[] hybridSortTime = new long[numOfTests];
-
-        //for loop here
-        //make array
-        int[] randomArray = new int[sizeOfTest];
-        fillArray(randomArray, numOfRandomSwaps);
-
-        //test if array is random
-        isSorted(randomArray, "Random");
-
-        //test insertion sort
-
-        //end for loop
+        long startTime;
+        long stopTime;
+        long timeElapsed;
+        boolean shouldBeSorted = true;//used to make isSorted more readable
 
 
-        //for loop here
-        //make array
-        int[] randomArray = new int[sizeOfTest];
-        fillArray(randomArray, numOfRandomSwaps);
+        //INSERTION SORT
+        for(int i=0;i<numOfTests;i++) {
+            int[] randomArray = new int[sizeOfTest];
+            fillArray(randomArray, numOfRandomSwaps);
 
-        //test if array is random
-        isSorted(randomArray, "Random");
+            //test if array is random
+            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
 
-        //test merge sort
+            //test insertion sort
+            startTime = System.nanoTime();
+            insertionSort(randomArray);
+            stopTime = System.nanoTime();
 
-        //end for loop
-
-
-        //for loop here
-        //make array
-        int[] randomArray = new int[sizeOfTest];
-        fillArray(randomArray, numOfRandomSwaps);
-
-        //test if array is random
-        isSorted(randomArray, "Random");
-
-        //test quicksort
-
-        //end for loop
+            assert(isSorted(randomArray,"Insertion Sort", shouldBeSorted));
+            //store the time it took to sort
+            timeElapsed = stopTime - startTime;
+            insertionSortTime[i]=timeElapsed;
+        }
+        double insertionSortMean= Stats.mean(insertionSortTime);
+        double insertionSortStdDev= Stats.standardDeviation(insertionSortTime);
 
 
-        //for loop here
-        //make array
-        int[] randomArray = new int[sizeOfTest];
-        fillArray(randomArray, numOfRandomSwaps);
+        //MERGE SORT
+        for(int i=0;i<numOfTests;i++) {
+            //make array
+            int[] randomArray = new int[sizeOfTest];
+            fillArray(randomArray, numOfRandomSwaps);
 
-        //test if array is random
-        isSorted(randomArray, "Random");
+            //test if array is random
+            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
 
-        //test hybrid quicksort
+            //test merge sort
+            startTime = System.nanoTime();
+            mergeSort(randomArray);
+            stopTime = System.nanoTime();
 
-        //end for loop
+            assert(isSorted(randomArray,"Merge Sort", shouldBeSorted));
+            //store the time it took to sort
+            timeElapsed = stopTime - startTime;
+            mergeSortTime[i]=timeElapsed;
+        }
+        double mergeSortMean= Stats.mean(mergeSortTime);
+        double mergeSortStdDev= Stats.standardDeviation(mergeSortTime);
 
 
+        //QUICK SORT
+        for(int i=0;i<numOfTests;i++) {
+            //make array
+            int[] randomArray = new int[sizeOfTest];
+            fillArray(randomArray, numOfRandomSwaps);
 
-    }
+            //test if array is random
+            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
+
+            //test quicksort
+            startTime = System.nanoTime();
+            quicksort(randomArray);
+            stopTime = System.nanoTime();
+
+            assert(isSorted(randomArray,"Quick Sort", shouldBeSorted));
+            //store the time it took to sort
+            timeElapsed = stopTime - startTime;
+            quickSortTime[i]=timeElapsed;
+        }
+        double quickSortMean= Stats.mean(quickSortTime);
+        double quickSortStdDev= Stats.standardDeviation(quickSortTime);
 
 
-    //REPORT
-    //ANSWER A FEW QUESTIONS
-}
+        //HYBRID SORT
+        for(int i=0;i<numOfTests;i++) {
+            //make array
+            int[] randomArray = new int[sizeOfTest];
+            fillArray(randomArray, numOfRandomSwaps);
+
+            //test if array is random
+            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
+
+            //test hybrid quicksort
+            startTime = System.nanoTime();
+            hybridQuickSort(randomArray);
+            stopTime = System.nanoTime();
+
+            assert(isSorted(randomArray,"Hybrid Quick Sort", shouldBeSorted));
+            //store the time it took to sort
+            timeElapsed = stopTime - startTime;
+            hybridSortTime[i]=timeElapsed;
+        }
+        double hybridSortMean= Stats.mean(hybridSortTime);
+        double hybridSortStdDev= Stats.standardDeviation(hybridSortTime);
+
+
+         //Z-TESTS
+        double insertVsQuickzStat = Stats.zTest(insertionSortTime, quickSortTime);
+        double insertVsMergezStat = Stats.zTest(insertionSortTime, mergeSortTime);
+        double insertVsHybridzStat = Stats.zTest(insertionSortTime, hybridSortTime);
+        double quickVsMergezStat = Stats.zTest(quickSortTime, mergeSortTime);
+        double quickVsHybridzStat = Stats.zTest(quickSortTime, hybridSortTime);
+        double mergeVsHybridzStat = Stats.zTest(mergeSortTime, hybridSortTime);
+
+
+        //DISPLAY RESULTS
+        System.out.println("All tests  ran successfully! Results:");
+        System.out.println("Insertion Sort: \n MEAN: "+String.format("%,.2f",insertionSortMean) +" ns \t \tSTANDARD DEVIATION: "+String.format("%.4f",insertionSortStdDev)+" ns. \n");
+        System.out.println("Merge Sort: \n MEAN: "+String.format("%,.2f",mergeSortMean) +" ns \t\tSTANDARD DEVIATION: "+String.format("%.4f",mergeSortStdDev)+" ns. \n");
+        System.out.println("Quick Sort: \n MEAN: "+String.format("%,.2f",quickSortMean) +" ns \t\tSTANDARD DEVIATION: "+String.format("%.4f",quickSortStdDev)+" ns. \n");
+        System.out.println("Hybrid Quick Sort: \n MEAN: "+String.format("%,.2f",hybridSortMean) +" ns \t\tSTANDARD DEVIATION: "+String.format("%.4f",hybridSortStdDev)+" ns. \n");
+        System.out.println("\nZ-TESTS:");
+        System.out.println("Insertion vs Quick sort: \t\t"+String.format("%.6f",insertVsQuickzStat)+" \n" +
+                            "Insertion vs Merge sort: \t\t"+String.format("%.6f",insertVsMergezStat)+" \n" +
+                            "Insertion vs Hybrid Quick sort: "+ String.format("%.6f",insertVsHybridzStat)+ " \n" +
+                            "Quick vs Merge sort: \t\t\t"+String.format("%.6f",quickVsMergezStat)+" \n" +
+                            "Quick vs Hybrid sort: \t\t\t"+String.format("%.6f",quickVsHybridzStat)+" \n" +
+                            "Merge vs Hybrid sort: \t\t\t"+String.format("%.6f",mergeVsHybridzStat)+" \n");
+
+        System.out.println("Program end.");
+
+    }//END BENCHMARK AND TEST
+}//END STATS
