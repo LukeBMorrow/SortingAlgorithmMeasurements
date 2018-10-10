@@ -61,14 +61,14 @@ public class Stats {
     //      SORTING WORK
     //A NON- RECURSIVE INSERTION SORT ALGORITHM
     public static void insertionSort(int[] nums) {
-        insertionSort(nums, 0, nums.length-1);
+        insertionSort(nums, 0, nums.length - 1);
     }
 
     private static void insertionSort(int[] nums, int start, int end) {
         int itemValue;
         int sortingIndex;
 
-        for (int i = start; i <= end; i++) {
+        for (int i = start; i < end; i++) {
             itemValue = nums[i];//the value we are currently looking to sort
             sortingIndex = i - 1;//our search index for the sorted portion
 
@@ -89,7 +89,7 @@ public class Stats {
     //A RECURSIVE MERGE SORT ALGORITHM
     public static void mergeSort(int[] nums) {
         int[] temp = new int[nums.length];
-        mergeSort(nums, 0, nums.length, temp);
+        mergeSort(nums, 0, nums.length - 1, temp);
     }
 
     private static void mergeSort(int[] nums, int start, int end, int[] temp) {
@@ -152,13 +152,13 @@ public class Stats {
          >end is the end of the part being sorted
      */
     private static void quicksort(int[] nums, int start, int end) {
-        if ((end - start) > 1)//run if there are at least two items to compare
+        if (end - start > 1)//run if there are at least two items to compare
         {
-            medianOf3(nums, start, end-1);//choose a non-terrible pivot
-            int middle = partition(nums, start, end-1);//approx. sort to get the pivot in the middle
+            medianOf3(nums, start, end - 1);//choose a non-terrible pivot
+            int middle = partition(nums, start, end - 1);//approx. sort to get the pivot in the middle
 
             quicksort(nums, start, middle);//rec. sort the first half
-            quicksort(nums, middle+1, end);//rec. sort the second half
+            quicksort(nums, middle, end - 1);//rec. sort the second half
         }//END IF
     }//END QUICKSORT
 
@@ -178,16 +178,13 @@ public class Stats {
         while (curr <= end) {
             if (nums[curr] < nums[start])//current item is smaller than pivot
             {
-                if(bigStart!=curr) {
-                    swap(nums, bigStart, curr);
-                }
-                    bigStart++;//make the small side bigger
-
+                swap(nums, bigStart, curr);
+                bigStart++;//make the small side bigger
             }
             curr++;
         }
         swap(nums, start, bigStart - 1);//move pivot to the middle
-        return (bigStart - 1);//returns the current position of the pivot
+        return bigStart - 1;//returns the current position of the pivot
     }
 
     /*This method will grab the first, middle, and last item of the
@@ -202,12 +199,12 @@ public class Stats {
     private static void medianOf3(int[] nums, int start, int end) {
         int middle = start + (end - start) / 2;
 
-        if ((nums[start] <= nums[middle] && nums[middle] <= nums[end]) ||
-                (nums[end] <= nums[middle] && nums[middle] <= nums[start]))
+        if (nums[start] <= nums[middle] && nums[middle] < nums[end] ||
+                nums[end] <= nums[middle] && nums[middle] < nums[start])
             swap(nums, start, middle);    //if middle is the median value
 
-        else if ((nums[middle] <= nums[end] && nums[end] <= nums[start]) ||
-                (nums[start] <= nums[end] && nums[end] <= nums[middle]))
+        else if (nums[middle] <= nums[end] && nums[end] < nums[start] ||
+                nums[start] <= nums[end] && nums[middle] < nums[end])
             swap(nums, start, end);       //if end is the median value
         //base case is that 0 is the median value
     }
@@ -232,16 +229,16 @@ public class Stats {
     }
 
     private static void hybridQuickSort(int[] nums, int start, int end) {
-        if ((end - start) > BREAKPOINT)//run if there are at least two items to compare
+        if (end - start > BREAKPOINT)//run if there are at least two items to compare
         {
             medianOf3(nums, start, end - 1);//choose a non-terrible pivot
-            int middle = partition(nums, start, end);
-            hybridQuickSort(nums, start, middle);//rec. sort the first half
-            hybridQuickSort(nums, middle+1, end);//rec. sort the second half
+            int middle = partition(nums, start, end - 1);//approx. sort to get the pivot in the middle
 
+            hybridQuickSort(nums, start, middle);//rec. sort the first half
+            hybridQuickSort(nums, middle, end - 1);//rec. sort the second half
         }//END IF
         else {
-            insertionSort(nums, start, end);//non-recursive sort the rest of the array
+            insertionSort(nums, start, end - 1);//non-recursive sort the rest of the array
         }
     }
 
@@ -255,7 +252,8 @@ public class Stats {
             currentSortedIndex++;
         }//look for a place where the data is out of order
 
-        if (!((currentSortedIndex == nums.length-1)||(nums[currentSortedIndex] < nums[currentSortedIndex + 1])) && shouldBeOrdered) {
+
+        if (!(nums[currentSortedIndex] < nums[currentSortedIndex + 1]) && shouldBeOrdered) {
             System.out.println("Sorting type: " + sortType + " :FAILED at position: " + currentSortedIndex);
             return false;
         }//END IF
@@ -289,7 +287,7 @@ public class Stats {
         long startTime;
         long stopTime;
         long timeElapsed;
-        boolean shouldBeSorted = true;//used to make isSorted calls more readable
+        boolean shouldBeSorted = true;//used to make isSorted more readable
 
 
         //INSERTION SORT
@@ -383,7 +381,7 @@ public class Stats {
         double hybridSortStdDev= Stats.standardDeviation(hybridSortTime);
 
 
-        //Z-TESTS
+         //Z-TESTS
         double insertVsQuickzStat = Stats.zTest(insertionSortTime, quickSortTime);
         double insertVsMergezStat = Stats.zTest(insertionSortTime, mergeSortTime);
         double insertVsHybridzStat = Stats.zTest(insertionSortTime, hybridSortTime);
@@ -400,11 +398,11 @@ public class Stats {
         System.out.println("Hybrid Quick Sort: \n MEAN: "+String.format("%,.2f",hybridSortMean) +" ns \t\tSTANDARD DEVIATION: "+String.format("%.4f",hybridSortStdDev)+" ns. \n");
         System.out.println("\nZ-TESTS:");
         System.out.println("Insertion vs Quick sort: \t\t"+String.format("%.6f",insertVsQuickzStat)+" \n" +
-                "Insertion vs Merge sort: \t\t"+String.format("%.6f",insertVsMergezStat)+" \n" +
-                "Insertion vs Hybrid Quick sort: "+ String.format("%.6f",insertVsHybridzStat)+ " \n" +
-                "Quick vs Merge sort: \t\t\t"+String.format("%.6f",quickVsMergezStat)+" \n" +
-                "Quick vs Hybrid sort: \t\t\t"+String.format("%.6f",quickVsHybridzStat)+" \n" +
-                "Merge vs Hybrid sort: \t\t\t"+String.format("%.6f",mergeVsHybridzStat)+" \n");
+                            "Insertion vs Merge sort: \t\t"+String.format("%.6f",insertVsMergezStat)+" \n" +
+                            "Insertion vs Hybrid Quick sort: "+ String.format("%.6f",insertVsHybridzStat)+ " \n" +
+                            "Quick vs Merge sort: \t\t\t"+String.format("%.6f",quickVsMergezStat)+" \n" +
+                            "Quick vs Hybrid sort: \t\t\t"+String.format("%.6f",quickVsHybridzStat)+" \n" +
+                            "Merge vs Hybrid sort: \t\t\t"+String.format("%.6f",mergeVsHybridzStat)+" \n");
 
     }//END BENCHMARK AND TEST
 }//END STATS
