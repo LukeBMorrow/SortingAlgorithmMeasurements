@@ -15,6 +15,7 @@ import java.lang.Math;
 
 public class Stats {
 
+    //constants
     private static final int BREAKPOINT = 50;
     private static final int NUM_TESTS = 100;
     private static final int TEST_SIZE = 10000;
@@ -52,18 +53,20 @@ public class Stats {
     }
 
 
-
     public static void main(String[] args)
     {
-        testAndBenchmark(NUM_TESTS, TEST_SIZE, NUM_RANDOM_SWAPS);
+        testAndBenchmark();
     }//END MAIN
 
-    //      SORTING WORK
-    //A NON- RECURSIVE INSERTION SORT ALGORITHM
+
+    /* a driver for insertion sort
+     */
     public static void insertionSort(int[] nums) {
         insertionSort(nums, 0, nums.length-1);
     }
 
+    /* sorts the array by choosing an item and swapping it into its proper place in the sorted part of the array.
+     */
     private static void insertionSort(int[] nums, int start, int end) {
         int itemValue;
         int sortingIndex;
@@ -85,13 +88,16 @@ public class Stats {
     }//END INSERTIONSORT
 
 
-    //      RECURSIVE WORK
-    //A RECURSIVE MERGE SORT ALGORITHM
+    /* a driver for merge sort
+     */
     public static void mergeSort(int[] nums) {
         int[] temp = new int[nums.length];
         mergeSort(nums, 0, nums.length, temp);
     }
 
+
+    /* Sorts via recursive merges of smaller sets of data.
+     */
     private static void mergeSort(int[] nums, int start, int end, int[] temp) {
         int mid;
 
@@ -107,6 +113,9 @@ public class Stats {
         }//END IF
     }//END MERGESORT
 
+
+    /*takes two sets of data and puts the two in sorted order into one set.
+     */
     private static void merge(int[] nums, int start, int mid, int end, int[] temp) {
         int currL = start;
         int currR = mid;
@@ -132,24 +141,19 @@ public class Stats {
     }//END MERGE
 
 
-    //A RECURSIVE QUICK SORT ALGORITHM
-    /*A driver method to ensure intuitive use for the user
-        >nums is the main array
+    /*A driver method for quick sort
      */
     public static void quicksort(int[] nums) {
         quicksort(nums, 0, nums.length);
     }
 
+
     /*The main body of the quicksort algorithm, this method will
         recursively partition an ever decreasing(in size) part of the array
-        to approximately sorted halves.
+        to approximately sorted halves, until sorting just two items each.
 
         -uses partition to approximately sort the halves
         -uses medianOf3 to find a pivot that is not a worst case scenario.
-
-         >nums is the main array
-         >start is the start of the part being sorted
-         >end is the end of the part being sorted
      */
     private static void quicksort(int[] nums, int start, int end) {
         if ((end - start) > 1)//run if there are at least two items to compare
@@ -167,10 +171,6 @@ public class Stats {
          first position (should have been placed there by mediaOf3)
 
          -uses swap for a simple swapping of two variables
-
-         >nums is the main array
-         >start is the start of the part being approx. sorted
-         >end is the end of the part being approx. sorted
      */
     private static int partition(int[] nums, int start, int end) {
         int bigStart = start + 1;//+1 because the pivot is in the first position
@@ -188,16 +188,13 @@ public class Stats {
         }
         swap(nums, start, bigStart - 1);//move pivot to the middle
         return (bigStart - 1);//returns the current position of the pivot
-    }
+    }//END PARTITION
+
 
     /*This method will grab the first, middle, and last item of the
          array and compare to find the /median of 3/
 
          -uses swap for a simple swapping of two variables
-
-         >nums is the main array
-         >start is the start of the part being viewed
-         >end is the end of the part being viewed
      */
     private static void medianOf3(int[] nums, int start, int end) {
         int middle = start + (end - start) / 2;
@@ -210,27 +207,33 @@ public class Stats {
                 (nums[start] <= nums[end] && nums[end] <= nums[middle]))
             swap(nums, start, end);       //if end is the median value
         //base case is that 0 is the median value
-    }
+    }//END MEDIANOF3
 
-    /*A simple swapping algorithm
 
-        >nums is the array being manipulated
-        >a is the first item being swapped
-        >b is the second item being swapped
+    /* swaps the position of the two given indexes in the given array
      */
     private static void swap(int[] nums, int a, int b) {
         int temp;
         temp = nums[a];
         nums[a] = nums[b];
         nums[b] = temp;
-    }
+    }//END SWAP
 
 
-    //A HYBRID QUICK SORT ALGORITHM THAT USES A BREAKPOINT.
+    /*a driver method for hybrid quick sort
+     */
     public static void hybridQuickSort(int[] nums) {
         hybridQuickSort(nums, 0, nums.length - 1);
     }
 
+
+    /* this sort uses a quick sort style of sorting until it reaches it's 'BREAKPOINT', where it switches
+        to sorting with insertion sort instead.
+
+        -uses the quick sorts 'medianof3'
+        -uses the quick sorts 'partition'
+        -uses 'insertion sort'
+     */
     private static void hybridQuickSort(int[] nums, int start, int end) {
         if ((end - start) > BREAKPOINT)//run if there are at least two items to compare
         {
@@ -242,50 +245,60 @@ public class Stats {
         }//END IF
         else {
             insertionSort(nums, start, end);//non-recursive sort the rest of the array
-        }
-    }
+        }//END ELSE
+    }//END HYBRID SORT
 
-    //--------------------------------------------------------------------------
 
-    //      NON SORTING WORK
-    //A METHOD THAT VERIFIES THAT AN ARRAY IS IN SORTED ORDER
+    /* this checks if the given array is sorted and if it isn't and it is supposed to be it will
+        print out the name of the sort type and the index at which it failed.
+     */
     public static boolean isSorted(int[] nums, String sortType, boolean shouldBeOrdered) {
         int currentSortedIndex = 0;
         while (currentSortedIndex < nums.length-1 && nums[currentSortedIndex] < nums[currentSortedIndex + 1]) {
             currentSortedIndex++;
         }//look for a place where the data is out of order
 
-        if (!((currentSortedIndex == nums.length-1)||(nums[currentSortedIndex] < nums[currentSortedIndex + 1])) && shouldBeOrdered) {
+        if (!((currentSortedIndex == nums.length-1)||(nums[currentSortedIndex] < nums[currentSortedIndex + 1])) && shouldBeOrdered)
+        {//check that it is not random
             System.out.println("Sorting type: " + sortType + " :FAILED at position: " + currentSortedIndex);
             return false;
-        }//END IF
+        }else if(!shouldBeOrdered && (currentSortedIndex == nums.length-1))
+        {//check that it is random
+            System.out.println("Array was not random.");
+            return false;
+        }
         return true;
     }//END ISSORTED
 
 
-    //A METHOD TO FILL AN ARRAY WITH VALUES TO SORT
-    public static void fillArray(int[] nums, int n) {
+    /* this fills an array linearly and preforms 'NUM_RANDOM_SWAPS' swaps on it to randomize it.
+     */
+    public static void fillArray(int[] nums) {
         for (int i = 0; i < nums.length; i++)//fills the array
         {
             nums[i] = i;
         }
 
 
-        for (int swapCount = 0; swapCount <= n; swapCount++)//preforms a random 'n' swaps
+        for (int swapCount = 0; swapCount <= NUM_RANDOM_SWAPS; swapCount++)//preforms a random 'n' swaps
         {
             swap(nums, (int) ((nums.length) * Math.random()), (int) ((nums.length) * Math.random()));
         }
     }
 
-    //A TESTING METHOD THAT ALLOWS YOU TO COMPARE AND TO VERIFY THESE SORTING METHODS USING SOME SIMPLE STATISTICS
 
-    public static void testAndBenchmark(int numOfTests, int sizeOfTest, int numOfRandomSwaps)
+    /* this runs each test every type of sort, and collects data to be presented by the print statements
+        at the end of the method.
+
+        NOTE: uses 'assert' to check if arrays are properly randomized or properly sorted.
+     */
+    public static void testAndBenchmark()
     {
         //make longs[] to store test times
-        long[] insertionSortTime = new long[numOfTests];
-        long[] mergeSortTime = new long[numOfTests];
-        long[] quickSortTime = new long[numOfTests];
-        long[] hybridSortTime = new long[numOfTests];
+        long[] insertionSortTime = new long[NUM_TESTS];
+        long[] mergeSortTime = new long[NUM_TESTS];
+        long[] quickSortTime = new long[NUM_TESTS];
+        long[] hybridSortTime = new long[NUM_TESTS];
         long startTime;
         long stopTime;
         long timeElapsed;
@@ -293,9 +306,9 @@ public class Stats {
 
 
         //INSERTION SORT
-        for(int i=0;i<numOfTests;i++) {
-            int[] randomArray = new int[sizeOfTest];
-            fillArray(randomArray, numOfRandomSwaps);
+        for(int i=0;i<NUM_TESTS;i++) {
+            int[] randomArray = new int[TEST_SIZE];
+            fillArray(randomArray);
 
             //test if array is random
             assert(isSorted(randomArray, "Random", !shouldBeSorted));
@@ -315,10 +328,10 @@ public class Stats {
 
 
         //MERGE SORT
-        for(int i=0;i<numOfTests;i++) {
+        for(int i=0;i<NUM_TESTS;i++) {
             //make array
-            int[] randomArray = new int[sizeOfTest];
-            fillArray(randomArray, numOfRandomSwaps);
+            int[] randomArray = new int[TEST_SIZE];
+            fillArray(randomArray);
 
             //test if array is random
             assert(isSorted(randomArray, "Random", !shouldBeSorted));
@@ -338,10 +351,10 @@ public class Stats {
 
 
         //QUICK SORT
-        for(int i=0;i<numOfTests;i++) {
+        for(int i=0;i<NUM_TESTS;i++) {
             //make array
-            int[] randomArray = new int[sizeOfTest];
-            fillArray(randomArray, numOfRandomSwaps);
+            int[] randomArray = new int[TEST_SIZE];
+            fillArray(randomArray);
 
             //test if array is random
             assert(isSorted(randomArray, "Random", !shouldBeSorted));
@@ -361,10 +374,10 @@ public class Stats {
 
 
         //HYBRID SORT
-        for(int i=0;i<numOfTests;i++) {
+        for(int i=0;i<NUM_TESTS;i++) {
             //make array
-            int[] randomArray = new int[sizeOfTest];
-            fillArray(randomArray, numOfRandomSwaps);
+            int[] randomArray = new int[TEST_SIZE];
+            fillArray(randomArray);
 
             //test if array is random
             assert(isSorted(randomArray, "Random", !shouldBeSorted));
