@@ -296,14 +296,14 @@ public class Stats {
             fillArray(randomArray, numOfRandomSwaps);
 
             //test if array is random
-            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
+            assert(isSorted(randomArray, "Random", !shouldBeSorted));
 
             //test insertion sort
             startTime = System.nanoTime();
             insertionSort(randomArray);
             stopTime = System.nanoTime();
 
-            assert(isSorted(randomArray,"Insertion Sort", shouldBeSorted));
+            assert(!isSorted(randomArray,"Insertion Sort", shouldBeSorted));
             //store the time it took to sort
             timeElapsed = stopTime - startTime;
             insertionSortTime[i]=timeElapsed;
@@ -319,14 +319,14 @@ public class Stats {
             fillArray(randomArray, numOfRandomSwaps);
 
             //test if array is random
-            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
+            assert(isSorted(randomArray, "Random", !shouldBeSorted));
 
             //test merge sort
             startTime = System.nanoTime();
             mergeSort(randomArray);
             stopTime = System.nanoTime();
 
-            assert(isSorted(randomArray,"Merge Sort", shouldBeSorted));
+            assert(!isSorted(randomArray,"Merge Sort", shouldBeSorted));
             //store the time it took to sort
             timeElapsed = stopTime - startTime;
             mergeSortTime[i]=timeElapsed;
@@ -342,14 +342,14 @@ public class Stats {
             fillArray(randomArray, numOfRandomSwaps);
 
             //test if array is random
-            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
+            assert(isSorted(randomArray, "Random", !shouldBeSorted));
 
             //test quicksort
             startTime = System.nanoTime();
             quicksort(randomArray);
             stopTime = System.nanoTime();
 
-            assert(isSorted(randomArray,"Quick Sort", shouldBeSorted));
+            assert(!isSorted(randomArray,"Quick Sort", shouldBeSorted));
             //store the time it took to sort
             timeElapsed = stopTime - startTime;
             quickSortTime[i]=timeElapsed;
@@ -365,14 +365,14 @@ public class Stats {
             fillArray(randomArray, numOfRandomSwaps);
 
             //test if array is random
-            assert(!isSorted(randomArray, "Random", !shouldBeSorted));
+            assert(isSorted(randomArray, "Random", !shouldBeSorted));
 
             //test hybrid quicksort
             startTime = System.nanoTime();
             hybridQuickSort(randomArray);
             stopTime = System.nanoTime();
 
-            assert(isSorted(randomArray,"Hybrid Quick Sort", shouldBeSorted));
+            assert(!isSorted(randomArray,"Hybrid Quick Sort", shouldBeSorted));
             //store the time it took to sort
             timeElapsed = stopTime - startTime;
             hybridSortTime[i]=timeElapsed;
@@ -403,8 +403,6 @@ public class Stats {
                             "Quick vs Merge sort: \t\t\t"+String.format("%.6f",quickVsMergezStat)+" \n" +
                             "Quick vs Hybrid sort: \t\t\t"+String.format("%.6f",quickVsHybridzStat)+" \n" +
                             "Merge vs Hybrid sort: \t\t\t"+String.format("%.6f",mergeVsHybridzStat)+" \n");
-
-        System.out.println("Program end.");
 
     }//END BENCHMARK AND TEST
 }//END STATS

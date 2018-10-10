@@ -1,0 +1,12 @@
+NAME 		Luke Morrow	
+STUDENT ID	7787696
+SECTION		A01
+INSTRUCTOR 	Cameron
+DATE 		2018-10-09
+
+1.Yes it was, the z-test between insertion sort and quick sort was hovering around 3, which is above the 2.5
+	needed to be statistically significant.	This is likely due to its method of sorting many, smaller arrays,
+	instead of one large array, and comparing far fewer items. Resulting in its O(nlogn) over insertion sorts
+	O(n^2).
+2.No, the z-test score was less than 1 and greater than -1, meaning that the difference in speed between quick
+ 	and hybrid quick sort may have been caused by random fluctuations and are not statistically significant.
