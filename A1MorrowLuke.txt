@@ -4,6 +4,28 @@ SECTION		A01
 INSTRUCTOR 	Cameron
 DATE 		2018-10-09
 
+Insertion Sort: 
+ MEAN: 6,449,831.55 ns 	 	STANDARD DEVIATION: 1852126.4074 ns. 
+
+Merge Sort: 
+ MEAN: 730,018.32 ns 		STANDARD DEVIATION: 291027.3919 ns. 
+
+Quick Sort: 
+ MEAN: 533,733.70 ns 		STANDARD DEVIATION: 195848.7772 ns. 
+
+Hybrid Quick Sort: 
+ MEAN: 327,870.73 ns 		STANDARD DEVIATION: 20687.1320 ns. 
+
+
+Z-TESTS:
+Insertion vs Quick sort: 		3.176510 
+Insertion vs Merge sort: 		3.050808 
+Insertion vs Hybrid Quick sort: 	3.305163 
+Quick vs Merge sort: 			-0.559550 
+Quick vs Hybrid sort: 			1.045317 
+Merge vs Hybrid sort: 			1.378343 
+
+
 1.Yes it was, the z-test between insertion sort and quick sort was hovering around 3, which is above the 2.5
 	needed to be statistically significant.	This is likely due to its method of sorting many, smaller arrays,
 	instead of one large array, and comparing far fewer items. Resulting in its O(nlogn) over insertion sorts
